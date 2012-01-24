@@ -1,5 +1,6 @@
 require "miro/version"
 require "oily_png"
+require "cocaine"
 require "tempfile"
 require "open-uri"
 
