@@ -8,15 +8,15 @@ describe Miro::DominantColors do
 
   describe "#remote_file?" do
     it "knows if an http:// request is a remote file" do
-      Miro::DominantColors.new('http://remote.com/file.jpg').remote_file?.should be_true
+      Miro::DominantColors.new('http://remote.com/file.jpg').send(:remote_source_image?).should be_true
     end
 
     it "knows if an http:// request is a remote file" do
-      Miro::DominantColors.new('https://remote.com/file.jpg').remote_file?.should be_true
+      Miro::DominantColors.new('https://remote.com/file.jpg').send(:remote_source_image?).should be_true
     end
 
     it "knows if an system path is not a remote file" do
-      Miro::DominantColors.new('/path/to/file').remote_file?.should be_false
+      Miro::DominantColors.new('/path/to/file').send(:remote_source_image?).should be_false
     end
   end
 
@@ -29,6 +29,6 @@ describe Miro::DominantColors do
 
     end
   end
-
   
 end
+
