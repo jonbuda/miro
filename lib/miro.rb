@@ -3,6 +3,8 @@ require "oily_png"
 require "tempfile"
 require "open-uri"
 
+require "miro/dominant_colors"
+
 module Miro
   class << self
     def options
