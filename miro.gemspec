@@ -8,6 +8,13 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{Extract the dominant colors from an image.}
   gem.homepage      = "https://github.com/jonbuda/miro"
 
+  gem.requirements  = 'ImageMagick'
+
+  gem.add_dependency "cocaine"
+  gem.add_dependency "oily_png"
+
+  gem.add_development_dependency "rspec"
+
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
