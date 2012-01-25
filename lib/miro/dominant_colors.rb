@@ -1,6 +1,7 @@
 module Miro
   class DominantColors
-   attr_accessor :src_image_path
+    attr_accessor :src_image_path
+
     def initialize(src_image_path)
       @src_image_path = src_image_path
     end
@@ -24,20 +25,18 @@ module Miro
   private
     def extract_colors_from_image
       downsample_colors_and_convert_to_png!
-      sort_by_dominant_color
+      colors = sort_by_dominant_color
+      cleanup_temporary_files!
+      return colors
     end
 
     def remote_source_image?
       @src_image_path =~ /^https?:\/\//
     end
 
-    def image_processed?
-      (sorted_pixels && sorted_pixels.kind_of?(Array) && !sorted_pixels.empty?)
-    end
-
     def downsample_colors_and_convert_to_png!
-      prepare_source_image
-      prepare_downsampled_image
+      @source_image = open_source_image
+      @downsampled_image = open_downsampled_image
       command.run
     end
 
@@ -49,20 +48,22 @@ module Miro
                               :out => File.expand_path(@downsampled_image.path))
     end
 
-    def prepare_source_image
+    def open_source_image
       if remote_source_image?
         original_extension = URI.parse(@src_image_path).path.split('.').last
 
-        @source_image = Tempfile.open(["#{Time.now.to_i.to_s}", ".#{original_extension}"])
-        @source_image.write(open(@src_image_path).read.force_encoding("UTF-8"))
+        tempfile = Tempfile.open(["source", ".#{original_extension}"])
+        tempfile.write(open(@src_image_path).read.force_encoding("UTF-8"))
+        return tempfile
       else
-        @source_image = File.open(@src_image_path)
+        return File.open(@src_image_path)
       end
     end
 
-    def prepare_downsampled_image
-      @downsampled_image = Tempfile.open(["#{Time.now.to_i.to_s}", '.png'])
-      @downsampled_image.binmode
+    def open_downsampled_image
+      tempfile = Tempfile.open(["downsampled", '.png'])
+      tempfile.binmode
+      tempfile
     end
 
     def group_pixels_by_color
@@ -71,9 +72,7 @@ module Miro
     end
 
     def sort_by_dominant_color
-      sorted_pixels = group_pixels_by_color.sort_by { |k,v| v.size }.reverse.flatten.uniq
-      cleanup_temporary_files!
-      return sorted_pixels
+      group_pixels_by_color.sort_by { |k,v| v.size }.reverse.flatten.uniq
     end
 
     def cleanup_temporary_files!
