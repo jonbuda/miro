@@ -1,28 +1,38 @@
 module Miro
   class DominantColors
-    attr_accessor :src_image_path
-
+   attr_accessor :src_image_path
     def initialize(src_image_path)
       @src_image_path = src_image_path
     end
 
-    def extract_colors_from_image(colors = :hex)
-      unless image_processed?
-        downsample_colors_and_convert_to_png!
-        sort_by_dominant_color
-        cleanup_temporary_files!
-      end
+    def to_hex
+      sorted_pixels.collect {|c| ChunkyPNG::Color.to_hex c, false }
+    end
 
-      send("#{colors}_values")
+    def to_rgb
+      sorted_pixels.collect {|c| ChunkyPNG::Color.to_truecolor_bytes c }
+    end
+
+    def to_rgba
+      sorted_pixels.collect {|c| ChunkyPNG::Color.to_truecolor_alpha_bytes c }
+    end
+
+    def sorted_pixels
+      @sorted_pixels ||= extract_colors_from_image
     end
 
   private
+    def extract_colors_from_image
+      downsample_colors_and_convert_to_png!
+      sort_by_dominant_color
+    end
+
     def remote_source_image?
       @src_image_path =~ /^https?:\/\//
     end
 
     def image_processed?
-      (@sorted_pixels && @sorted_pixels.kind_of?(Array) && !@sorted_pixels.empty?)
+      (sorted_pixels && sorted_pixels.kind_of?(Array) && !sorted_pixels.empty?)
     end
 
     def downsample_colors_and_convert_to_png!
@@ -61,20 +71,14 @@ module Miro
     end
 
     def sort_by_dominant_color
-      @sorted_pixels = group_pixels_by_color.sort_by { |k,v| v.size }.reverse.flatten.uniq
+      sorted_pixels = group_pixels_by_color.sort_by { |k,v| v.size }.reverse.flatten.uniq
+      cleanup_temporary_files!
+      return sorted_pixels
     end
 
     def cleanup_temporary_files!
       @source_image.close(true) if remote_source_image?
       @downsampled_image.close(true)
-    end
-
-    def hex_values
-      @sorted_pixels.collect {|c| ChunkyPNG::Color.to_hex c, false }
-    end
-
-    def rgb_values
-      @sorted_pixels.collect {|c| ChunkyPNG::Color.to_truecolor_bytes c }
     end
   end
 end
