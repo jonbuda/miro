@@ -14,6 +14,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "oily_png"
 
   gem.add_development_dependency "rspec"
+  gem.add_development_dependency "fakeweb"
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
