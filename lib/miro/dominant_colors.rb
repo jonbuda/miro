@@ -51,9 +51,11 @@ module Miro
     def open_source_image
       if remote_source_image?
         original_extension = URI.parse(@src_image_path).path.split('.').last
-
+        
         tempfile = Tempfile.open(["source", ".#{original_extension}"])
-        tempfile.write(open(@src_image_path).read.force_encoding("UTF-8"))
+        remote_file_data = open(@src_image_path).read
+
+        tempfile.write(RUBY_VERSION =~ /1.9/ ? remote_file_data.force_encoding("UTF-8") : remote_file_data)
         return tempfile
       else
         return File.open(@src_image_path)
