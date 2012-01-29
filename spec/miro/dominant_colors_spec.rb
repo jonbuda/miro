@@ -130,5 +130,27 @@ describe Miro::DominantColors do
         subject.to_rgba.should eq(expected_rgba_values)
       end
     end
+
   end
+
+  context "when find percentages of each color" do
+    let(:pixel_data) {
+        [ 2678156287,
+          1362307839, 1362307839,
+          2506379263, 2506379263, 2506379263, 2506379263,
+          2739747583, 2739747583, 2739747583
+        ] }
+
+    describe "#by_percentage" do
+      before do
+        File.stub(:open).and_return(mock_source_image)
+        subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
+      end
+
+      it "returns an array of percents" do
+        subject.by_percentage.should == [0.4, 0.3, 0.2, 0.1]
+      end
+    end
+  end
+  
 end

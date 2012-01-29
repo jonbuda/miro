@@ -17,6 +17,12 @@ module Miro
     def to_rgba
       sorted_pixels.collect {|c| ChunkyPNG::Color.to_truecolor_alpha_bytes c }
     end
+    
+    def by_percentage
+      sorted_pixels
+      pixel_count = @pixels.size
+      sorted_pixels.collect { |pixel| @grouped_pixels[pixel].size / pixel_count.to_f }
+    end
 
     def sorted_pixels
       @sorted_pixels ||= extract_colors_from_image
@@ -69,8 +75,8 @@ module Miro
     end
 
     def group_pixels_by_color
-      chunky_png = ChunkyPNG::Image.from_file File.expand_path(@downsampled_image.path)
-      chunky_png.pixels.group_by { |pixel| pixel }
+      @pixels ||= ChunkyPNG::Image.from_file(File.expand_path(@downsampled_image.path)).pixels
+      @grouped_pixels ||= @pixels.group_by { |pixel| pixel }
     end
 
     def sort_by_dominant_color
