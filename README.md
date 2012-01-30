@@ -63,7 +63,7 @@ Retrieving percentages of colors
 
 ```ruby
 # percentage of each color in an image. matches sorting from to_hex,
-to_rgb and to_rgba.
+# to_rgb and to_rgba.
 
 colors.by_percentage # => [0.50, 0.25, 0.15, 0.10]
 ```
