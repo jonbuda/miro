@@ -47,7 +47,7 @@ module Miro
     end
 
     def command
-      Cocaine::CommandLine.new(Miro.options[:image_magick_path], ":in -resize :resolution -colors :colors :out",
+      Cocaine::CommandLine.new(Miro.options[:image_magick_path], "':in[0]' -resize :resolution -colors :colors :out",
                               :in => File.expand_path(@source_image.path),
                               :resolution => Miro.options[:resolution],
                               :colors => Miro.options[:color_count].to_s,
