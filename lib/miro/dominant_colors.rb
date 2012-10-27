@@ -43,15 +43,15 @@ module Miro
     def downsample_colors_and_convert_to_png!
       @source_image = open_source_image
       @downsampled_image = open_downsampled_image
-      command.run
+      command
     end
 
     def command
-      Cocaine::CommandLine.new(Miro.options[:image_magick_path], ":in -resize :resolution -colors :colors :out",
-                              :in => File.expand_path(@source_image.path),
-                              :resolution => Miro.options[:resolution],
-                              :colors => Miro.options[:color_count].to_s,
-                              :out => File.expand_path(@downsampled_image.path))
+      line = Cocaine::CommandLine.new(Miro.options[:image_magick_path], ":in -resize :resolution -colors :colors :out")
+      line.run(:in => File.expand_path(@source_image.path),
+                   :resolution => Miro.options[:resolution],
+                   :colors => Miro.options[:color_count].to_s,
+                   :out => File.expand_path(@downsampled_image.path))
     end
 
     def open_source_image
