@@ -56,12 +56,7 @@ describe Miro::DominantColors do
 
     it "runs the imagemagick command line with the correct arguments" do
       subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
-      Cocaine::CommandLine.should_receive(:new).with(Miro.options[:image_magick_path],
-                                                     ":in -resize :resolution -colors :colors :out",
-                                                     :in => '/path/to/source_image',
-                                                     :resolution => Miro.options[:resolution],
-                                                     :colors => Miro.options[:color_count].to_s,
-                                                     :out => '/path/to/downsampled_image')
+      Cocaine::CommandLine.should_receive(:new).with(Miro.options[:image_magick_path], ":in -resize :resolution -colors :colors :out")
       subject.sorted_pixels
     end
 
