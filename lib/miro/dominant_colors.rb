@@ -63,6 +63,7 @@ module Miro
         remote_file_data = open(@src_image_path).read
 
         tempfile.write(RUBY_VERSION =~ /1.9/ ? remote_file_data.force_encoding("UTF-8") : remote_file_data)
+        tempfile.close
         return tempfile
       else
         return File.open(@src_image_path)
