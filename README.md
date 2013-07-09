@@ -34,6 +34,7 @@ Miro.options # => {:image_magick_path  => "/usr/bin/convert", :resolution => "15
 Miro.options[:image_magick_path] = '/usr/local/bin/convert'
 Miro.options[:resolution] = '100x100'
 Miro.options[:color_count] = 4
+Miro.options[:force_encode_utf] = true
 ```
 
 Initializing an image
