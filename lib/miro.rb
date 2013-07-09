@@ -13,7 +13,8 @@ module Miro
         :image_magick_path  => "/usr/bin/convert",
         :resolution         => "150x150",
         :color_count        => 8,
-        :quantize           => 'RGB'
+        :quantize           => 'RGB',
+        :force_encode_utf   => false
       }
     end
   end

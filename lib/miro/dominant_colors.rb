@@ -59,7 +59,7 @@ module Miro
         tempfile = Tempfile.open(["source", ".#{original_extension}"])
         remote_file_data = open(@src_image_path).read
 
-        tempfile.write(RUBY_VERSION =~ /1.9/ ? remote_file_data.force_encoding("UTF-8") : remote_file_data)
+        tempfile.write(RUBY_VERSION =~ /1.9/ || Miro.options[:force_encode_utf] ? remote_file_data.force_encoding("UTF-8") : remote_file_data)
         tempfile.close
         return tempfile
       else
