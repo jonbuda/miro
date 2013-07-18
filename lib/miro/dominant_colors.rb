@@ -60,12 +60,16 @@ module Miro
         tempfile = Tempfile.open(["source", ".#{original_extension}"])
         remote_file_data = open(@src_image_path).read
 
-        tempfile.write(RUBY_VERSION =~ /1.9/ ? remote_file_data.force_encoding("UTF-8") : remote_file_data)
+        tempfile.write(should_force_encoding? ? remote_file_data.force_encoding("UTF-8") : remote_file_data)
         tempfile.close
         return tempfile
       else
         return File.open(@src_image_path)
       end
+    end
+
+    def should_force_encoding?
+      Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('1.9')
     end
 
     def open_downsampled_image
