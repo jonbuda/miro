@@ -69,7 +69,7 @@ module Miro
     end
 
     def should_force_encoding?
-      Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('1.9')
+      Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('1.9')
     end
 
     def open_downsampled_image
