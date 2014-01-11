@@ -22,4 +22,5 @@ Gem::Specification.new do |gem|
   gem.name          = "miro"
   gem.require_paths = ["lib"]
   gem.version       = Miro::VERSION
+  gem.license       = "MIT"
 end
