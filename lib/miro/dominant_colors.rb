@@ -8,15 +8,15 @@ module Miro
     end
 
     def to_hex
-      sorted_pixels.collect {|c| ChunkyPNG::Color.to_hex c, false }
+      sorted_pixels.collect { |pixel| ChunkyPNG::Color.to_hex(pixel, false) }
     end
 
     def to_rgb
-      sorted_pixels.collect {|c| ChunkyPNG::Color.to_truecolor_bytes c }
+      sorted_pixels.collect { |pixel| ChunkyPNG::Color.to_truecolor_bytes(pixel) }
     end
 
     def to_rgba
-      sorted_pixels.collect {|c| ChunkyPNG::Color.to_truecolor_alpha_bytes c }
+      sorted_pixels.collect { |pixel| ChunkyPNG::Color.to_truecolor_alpha_bytes(pixel) }
     end
 
     def by_percentage
