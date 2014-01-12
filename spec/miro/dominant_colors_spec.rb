@@ -4,7 +4,7 @@ describe Miro::DominantColors do
   let(:subject) { Miro::DominantColors.new('/path/to/file') }
   let(:mock_source_image) { double('file', :path => '/path/to/source_image').as_null_object }
   let(:mock_downsampled_image) { double('file', :path => '/path/to/downsampled_image').as_null_object }
-  let(:pixel_data) { 
+  let(:pixel_data) {
     [ 2678156287,
       1362307839, 1362307839, 1362307839, 1362307839, 1362307839, 1362307839, 1362307839, 1362307839,
       2506379263, 2506379263, 2506379263, 2506379263,
@@ -155,5 +155,4 @@ describe Miro::DominantColors do
       end
     end
   end
-  
 end
