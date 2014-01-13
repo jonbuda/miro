@@ -45,7 +45,7 @@ module Miro
       @source_image = open_source_image
       @downsampled_image = open_downsampled_image
 
-      Cocaine::CommandLine.new(Miro.options[:image_magick_path], "':in[0]' -resize :resolution -colors :colors -colorspace :quantize -quantize :quantize :out").
+      Cocaine::CommandLine.new(Miro.options[:image_magick_path], params).
         run(:in => File.expand_path(@source_image.path),
             :resolution => Miro.options[:resolution],
             :colors => Miro.options[:color_count].to_s,
@@ -76,6 +76,10 @@ module Miro
       tempfile = Tempfile.open(["downsampled", '.png'])
       tempfile.binmode
       tempfile
+    end
+
+    def params
+      "':in[0]' -resize :resolution -colors :colors -colorspace :quantize -quantize :quantize :out"
     end
 
     def group_pixels_by_color
