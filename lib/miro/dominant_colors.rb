@@ -92,8 +92,8 @@ module Miro
     end
 
     def cleanup_temporary_files!
-      @source_image.close(true) if remote_source_image?
-      @downsampled_image.close(true)
+      @source_image.close! if remote_source_image?
+      @downsampled_image.close!
     end
   end
 end

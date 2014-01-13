@@ -88,8 +88,8 @@ describe Miro::DominantColors do
     end
 
     it "deletes only temporary downsampled file when finished" do
-       mock_downsampled_image.should_receive(:close).with(true)
-       mock_source_image.should_not_receive(:close)
+       mock_downsampled_image.should_receive(:close!)
+       mock_source_image.should_not_receive(:close!)
        subject.sorted_pixels
      end
   end
@@ -108,7 +108,7 @@ describe Miro::DominantColors do
     end
 
     it "deletes the temporary source file when finished" do
-       mock_source_image.should_receive(:close).with(true)
+       mock_source_image.should_receive(:close!)
        subject.sorted_pixels
      end
   end
