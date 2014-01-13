@@ -54,18 +54,18 @@ module Miro
     end
 
     def open_source_image
-      if remote_source_image?
-        original_extension = @image_type || URI.parse(@src_image_path).path.split('.').last
-
-        tempfile = Tempfile.open(["source", ".#{original_extension}"])
-        remote_file_data = open(@src_image_path).read
-
-        tempfile.write(should_force_encoding? ? remote_file_data.force_encoding("UTF-8") : remote_file_data)
-        tempfile.close
-        return tempfile
-      else
+      unless remote_source_image?
         return File.open(@src_image_path)
       end
+
+      original_extension = @image_type || URI.parse(@src_image_path).path.split('.').last
+
+      tempfile = Tempfile.open(["source", ".#{original_extension}"])
+      remote_file_data = open(@src_image_path).read
+
+      tempfile.write(should_force_encoding? ? remote_file_data.force_encoding("UTF-8") : remote_file_data)
+      tempfile.close
+      tempfile
     end
 
     def should_force_encoding?
