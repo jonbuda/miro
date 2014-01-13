@@ -34,7 +34,7 @@ module Miro
       downsample_colors_and_convert_to_png!
       colors = sort_by_dominant_color
       cleanup_temporary_files!
-      return colors
+      colors
     end
 
     def downsample_colors_and_convert_to_png!
