@@ -37,10 +37,6 @@ module Miro
       return colors
     end
 
-    def remote_source_image?
-      @src_image_path =~ /^https?:\/\//
-    end
-
     def downsample_colors_and_convert_to_png!
       @source_image = open_source_image
       @downsampled_image = open_downsampled_image
@@ -94,6 +90,10 @@ module Miro
     def cleanup_temporary_files!
       @source_image.close! if remote_source_image?
       @downsampled_image.close!
+    end
+
+    def remote_source_image?
+      @src_image_path =~ /^https?:\/\//
     end
   end
 end
