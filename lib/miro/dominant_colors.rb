@@ -41,7 +41,7 @@ module Miro
       @source_image = open_source_image
       @downsampled_image = open_downsampled_image
 
-      Cocaine::CommandLine.new(Miro.options[:image_magick_path], params).
+      Cocaine::CommandLine.new(Miro.options[:image_magick_path], image_magick_params).
         run(:in => File.expand_path(@source_image.path),
             :resolution => Miro.options[:resolution],
             :colors => Miro.options[:color_count].to_s,
@@ -50,9 +50,7 @@ module Miro
     end
 
     def open_source_image
-      unless remote_source_image?
-        return File.open(@src_image_path)
-      end
+      return File.open(@src_image_path) unless remote_source_image?
 
       original_extension = @image_type || URI.parse(@src_image_path).path.split('.').last
 
@@ -74,7 +72,7 @@ module Miro
       tempfile
     end
 
-    def params
+    def image_magick_params
       "':in[0]' -resize :resolution -colors :colors -colorspace :quantize -quantize :quantize :out"
     end
 
