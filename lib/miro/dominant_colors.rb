@@ -35,6 +35,7 @@ module Miro
     end
 
     def by_percentage
+      return nil if Miro.histogram?
       sorted_pixels
       pixel_count = @pixels.size
       sorted_pixels.collect { |pixel| @grouped_pixels[pixel].size / pixel_count.to_f }
