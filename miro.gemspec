@@ -12,6 +12,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "cocaine"
   gem.add_dependency "oily_png"
+  gem.add_dependency "color"
 
   gem.add_development_dependency "rspec"
   gem.add_development_dependency "fakeweb"
