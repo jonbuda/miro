@@ -46,7 +46,7 @@ module Miro
     end
 
     def histogram
-      @histogram || downsample_and_histogram.sort_by { |item| item[0]  }.reverse
+      @histogram ||= downsample_and_histogram.sort_by { |item| item[0]  }.reverse
     end
   private
 
