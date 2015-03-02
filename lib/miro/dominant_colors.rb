@@ -2,9 +2,16 @@ module Miro
   class DominantColors
     attr_accessor :src_image_path
 
-    def initialize(src_image_path, image_type = nil)
+    def initialize(src_image_path, options_or_image_type = {})
+      if options_or_image_type.is_a? String
+        @options = {image_type: options_or_image_type}
+      else
+        @options = options_or_image_type || {}
+      end
+
       @src_image_path = src_image_path
-      @image_type = image_type
+      @image_type = @options[:image_type]
+      @color_count = @options.fetch(:color_count, Miro.options[:color_count]).to_s
     end
 
     def to_hex
@@ -55,7 +62,7 @@ module Miro
       hstring = Cocaine::CommandLine.new(Miro.options[:image_magick_path], image_magick_params).
         run(:in => File.expand_path(@source_image.path),
             :resolution => Miro.options[:resolution],
-            :colors => Miro.options[:color_count].to_s,
+            :colors => @color_count,
             :quantize => Miro.options[:quantize])
       cleanup_temporary_files!
       parse_result(hstring)
@@ -81,7 +88,7 @@ module Miro
       Cocaine::CommandLine.new(Miro.options[:image_magick_path], image_magick_params).
         run(:in => File.expand_path(@source_image.path),
             :resolution => Miro.options[:resolution],
-            :colors => Miro.options[:color_count].to_s,
+            :colors => @color_count,
             :quantize => Miro.options[:quantize],
             :out => File.expand_path(@downsampled_image.path))
     end
