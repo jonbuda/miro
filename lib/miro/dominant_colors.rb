@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module Miro
   class DominantColors
     attr_accessor :src_image_path
@@ -53,7 +55,7 @@ module Miro
     def downsample_and_histogram
       @source_image = open_source_image
       hstring = Cocaine::CommandLine.new(Miro.options[:image_magick_path], image_magick_params).
-        run(:in => File.expand_path(@source_image.path),
+        run(:in => Shellwords.escape(File.expand_path(@source_image.path)),
             :resolution => Miro.options[:resolution],
             :colors => Miro.options[:color_count].to_s,
             :quantize => Miro.options[:quantize])
