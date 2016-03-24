@@ -60,7 +60,7 @@ colors.to_rgb # => [[81, 51, 42], [44, 29, 24], [108, 73, 55], [101, 81, 74], [1
 # RGB with Alpha channels
 colors.to_rgba # => [[82, 37, 40, 255], [48, 17, 19, 255], [109, 70, 71, 255], [221, 158, 48, 255], [168, 103, 48, 255], [226, 178, 79, 255], [191, 146, 65, 255], [199, 165, 150, 255]]
 ```
-**Aditional methods only aviable when histogram method is enabled**
+**Additional methods only available when histogram method is enabled**
 
 ```ruby
 # HSL
