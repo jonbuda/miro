@@ -159,86 +159,91 @@ describe Miro::DominantColors do
   end
   end
 
+
   context "histogram method" do
-  let(:subject) { Miro::DominantColors.new(File.expand_path('spec/data/test.png')) }
-  let(:hex_colors){["#00ff02","#0000ff","#ff009a","#fa0000","#878787","#585858","#001a6b","#8f0074"]}
+  let(:hex_colors){["#00ff02","#0000ff","#ff009a","#fa0000","#868787","#585858","#001a6b","#8f0074"]}
   let(:object_colors){ hex_colors.map{|c| Color::RGB.from_html(c) } }
 
-  before do
-    Miro.stub(:histogram?).and_return(true)
-  end
+  %w(spec/data/test.png spec/data/test_16_bit.png).each do |file_path|
+    context file_path do
+      let(:subject) { Miro::DominantColors.new(File.expand_path(file_path)) }
+      before do
+        Miro.stub(:histogram?).and_return(true)
+      end
 
-  describe "#downsample_and_histogram" do
-    it "should return an array" do
-      subject.send(:downsample_and_histogram).should be_an_instance_of(Array)
-    end
+      describe "#downsample_and_histogram" do
+        it "should return an array" do
+          subject.send(:downsample_and_histogram).should be_an_instance_of(Array)
+        end
 
-    it "should contain colors" do
-      subject.send(:downsample_and_histogram).each do |item|
-       item[1].should be_an_instance_of(Color::RGB)
+        it "should contain colors" do
+          subject.send(:downsample_and_histogram).each do |item|
+           item[1].should be_an_instance_of(Color::RGB)
+          end
+        end
+
+        it "should have the max length of the color config" do
+          subject.send(:downsample_and_histogram).count.should <= Miro.options[:color_count]
+        end
+      end
+
+      describe "#histogram" do
+        it "should return a hash" do
+          subject.histogram.should be_an_instance_of(Array)
+        end
+
+        it "should start with the most used color" do
+          subject.histogram.first[1].should == Color::RGB.from_html('#00FF02')
+        end
+
+        it "should end with the less used color" do
+          subject.histogram.last[1].should == Color::RGB.from_html('#8F0074')
+        end
+      end
+
+      describe "#to_hex" do
+        it "should be #00FF02 at the first element" do
+          subject.to_hex.first.should == hex_colors.first
+        end
+        it "should be #8F0074 at the first element" do
+          subject.to_hex.last.should == hex_colors.last
+        end
+        it "should have the right values" do
+          subject.to_hex.should == hex_colors
+        end
+      end
+
+      describe "#to_rgb" do
+        it "should have the right values" do
+          subject.to_rgb.should == object_colors.map(&:to_rgb).map(&:to_a)
+        end
+      end
+
+      describe "#to_rgba" do
+        it "should have the right values" do
+          subject.to_rgba.should == object_colors.map(&:css_rgba)
+        end
+      end
+
+      describe "#to_hsl" do
+        it "should have the right values" do
+          subject.to_hsl.should == object_colors.map(&:to_hsl).map(&:to_a)
+        end
+      end
+
+      describe "#to_cmyk" do
+        it "should have the right values" do
+          subject.to_cmyk.should == object_colors.map(&:to_cmyk).map(&:to_a)
+        end
+      end
+
+      describe "#to_yiq" do
+        it "should have the right values" do
+          subject.to_yiq.should == object_colors.map(&:to_yiq).map(&:to_a)
+        end
+      end
+
       end
     end
-
-    it "should have the max length of the color config" do
-      subject.send(:downsample_and_histogram).count.should <= Miro.options[:color_count]
-    end
-  end
-
-  describe "#histogram" do 
-    it "should return a hash" do
-      subject.histogram.should be_an_instance_of(Array)
-    end
-
-    it "should start with the most used color" do
-      subject.histogram.first[1].should == Color::RGB.from_html('#00FF02')
-    end
-
-    it "should end with the less used color" do
-      subject.histogram.last[1].should == Color::RGB.from_html('#8F0074')
-    end
-  end
-
-  describe "#to_hex" do
-    it "should be #00FF02 at the first element" do
-      subject.to_hex.first.should == hex_colors.first
-    end
-    it "should be #8F0074 at the first element" do
-      subject.to_hex.last.should == hex_colors.last
-    end
-    it "should have the right values" do
-      subject.to_hex.should == hex_colors
-    end
-  end
-
-  describe "#to_rgb" do
-    it "should have the right values" do
-      subject.to_rgb.should == object_colors.map(&:to_rgb).map(&:to_a)
-    end
-  end
-
-  describe "#to_rgba" do
-    it "should have the right values" do
-      subject.to_rgba.should == object_colors.map(&:css_rgba)
-    end
-  end
-
-  describe "#to_hsl" do
-    it "should have the right values" do
-      subject.to_hsl.should == object_colors.map(&:to_hsl).map(&:to_a)
-    end
-  end
-
-  describe "#to_cmyk" do
-    it "should have the right values" do
-      subject.to_cmyk.should == object_colors.map(&:to_cmyk).map(&:to_a)
-    end
-  end
-
-  describe "#to_yiq" do
-    it "should have the right values" do
-      subject.to_yiq.should == object_colors.map(&:to_yiq).map(&:to_a)
-    end
-  end
-
   end
 end
