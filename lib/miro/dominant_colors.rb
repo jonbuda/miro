@@ -92,7 +92,8 @@ module Miro
       return File.open(@src_image_path) unless remote_source_image?
 
       original_extension = @image_type || URI.parse(@src_image_path).path.split('.').last
-
+      original_extension = URI.parse(@src_image_path).path.split('/').last if original_extension.length>3
+      #Added above line since URL images without extensions would not work
       tempfile = Tempfile.open(["source", ".#{original_extension}"])
       remote_file_data = open(@src_image_path).read
 
