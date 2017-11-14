@@ -81,7 +81,7 @@ module Miro
       @downsampled_image = open_downsampled_image
 
       Cocaine::CommandLine.new(Miro.options[:image_magick_path], image_magick_params).
-        run(:in => File.expand_path(@source_image.path),
+        run(:in => Shellwords.escape(File.expand_path(@source_image.path)),
             :resolution => Miro.options[:resolution],
             :colors => Miro.options[:color_count].to_s,
             :quantize => Miro.options[:quantize],
