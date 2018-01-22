@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Miro::DominantColors do
   context "colors_group method" do
+  let(:command) { double('sommang', run: true) }
   let(:subject) { Miro::DominantColors.new('/path/to/file') }
   let(:mock_source_image) { double('file', :path => '/path/to/source_image').as_null_object }
   let(:mock_downsampled_image) { double('file', :path => '/path/to/downsampled_image').as_null_object }
@@ -22,7 +23,7 @@ describe Miro::DominantColors do
 
   before do
     Miro.stub(:histogram?).and_return(false)
-    Cocaine::CommandLine.stub(:new).and_return(double('command', :run => true))
+    Cocaine::CommandLine.stub(:new).and_return(command)
     ChunkyPNG::Image.stub(:from_file).and_return(chunky_png_results)
   end
 
@@ -195,6 +196,15 @@ describe Miro::DominantColors do
 
     it "should end with the less used color" do
       subject.histogram.last[1].should == Color::RGB.from_html('#8F0074')
+    end
+
+    context 'command returns invalid colors' do
+      let(:mixed_rgb_rgba) { ['#00112233', '#00112233FF'] }
+      let(:command) { double('sommang', run: mixed_rgb_rgba) }
+
+      it 'keeps the correct number of colors for processing' do
+        subject.histogram
+      end
     end
   end
 

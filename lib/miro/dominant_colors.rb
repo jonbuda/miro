@@ -65,7 +65,8 @@ module Miro
 
     def parse_result(hstring)
       hstring.scan(/(\d*):.*(#[0-9A-Fa-f]*)/).collect do |match|
-        [match[0].to_i, eval("Color::#{Miro.options[:quantize].upcase}").from_html(match[1])]
+        colors = match[1].slice(0..6)
+        [match[0].to_i, eval("Color::#{Miro.options[:quantize].upcase}").from_html(colors)]
       end
     end
 
