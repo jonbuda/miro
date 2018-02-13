@@ -22,7 +22,7 @@ describe Miro::DominantColors do
 
   before do
     Miro.stub(:histogram?).and_return(false)
-    Cocaine::CommandLine.stub(:new).and_return(double('command', :run => true))
+    Terrapin::CommandLine.stub(:new).and_return(double('command', :run => true))
     ChunkyPNG::Image.stub(:from_file).and_return(chunky_png_results)
   end
 
@@ -59,7 +59,7 @@ describe Miro::DominantColors do
     it "runs the imagemagick command line with the correct arguments" do
       subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
       line = double('line')
-      Cocaine::CommandLine.should_receive(:new).with(Miro.options[:image_magick_path],
+      Terrapin::CommandLine.should_receive(:new).with(Miro.options[:image_magick_path],
                                                      "':in[0]' -resize :resolution -colors :colors -colorspace :quantize -quantize :quantize :out").and_return(line)
 
       line.should_receive(:run).with(:in => '/path/to/source_image',
