@@ -1,5 +1,5 @@
 require "miro/version"
-require "cocaine"
+require "terrapin"
 require "color"
 require "tempfile"
 require "open-uri"
