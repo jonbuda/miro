@@ -54,7 +54,7 @@ module Miro
 
     def downsample_and_histogram
       @source_image = open_source_image
-      hstring = Cocaine::CommandLine.new(Miro.options[:image_magick_path], image_magick_params).
+      hstring = Terrapin::CommandLine.new(Miro.options[:image_magick_path], image_magick_params).
         run(:in => Shellwords.escape(File.expand_path(@source_image.path)),
             :resolution => Miro.options[:resolution],
             :colors => Miro.options[:color_count].to_s,
@@ -80,7 +80,7 @@ module Miro
       @source_image = open_source_image
       @downsampled_image = open_downsampled_image
 
-      Cocaine::CommandLine.new(Miro.options[:image_magick_path], image_magick_params).
+      Terrapin::CommandLine.new(Miro.options[:image_magick_path], image_magick_params).
         run(:in => Shellwords.escape(File.expand_path(@source_image.path)),
             :resolution => Miro.options[:resolution],
             :colors => Miro.options[:color_count].to_s,
