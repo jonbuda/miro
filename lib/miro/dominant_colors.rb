@@ -113,9 +113,9 @@ module Miro
 
     def image_magick_params
       if Miro.histogram?
-        "':in[0]' -resize :resolution -colors :colors -colorspace :quantize -quantize :quantize -alpha remove -format %c histogram:info:"
+        "':in[0]' -resize :resolution -colors :colors -quantize :quantize -alpha remove -format %c histogram:info:"
       else
-        "':in[0]' -resize :resolution -colors :colors -colorspace :quantize -quantize :quantize :out"
+          "':in[0]' -resize :resolution -colors :colors -quantize :quantize :out"
       end
     end
 
