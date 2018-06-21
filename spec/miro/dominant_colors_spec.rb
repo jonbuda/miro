@@ -184,7 +184,7 @@ describe Miro::DominantColors do
     end
   end
 
-  describe "#histogram" do 
+  describe "#histogram" do
     it "should return a hash" do
       subject.histogram.should be_an_instance_of(Array)
     end
