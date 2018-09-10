@@ -10,7 +10,7 @@ module Miro
     end
 
     def to_hex
-      return histogram.map{ |item| item[1].html } if Miro.histogram?
+      return histogram.map { |item| item[1].html } if Miro.histogram?
       sorted_pixels.collect { |pixel| ChunkyPNG::Color.to_hex(pixel, false) }
     end
 
