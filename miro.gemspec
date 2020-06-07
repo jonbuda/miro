@@ -13,7 +13,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency "terrapin"
   gem.add_dependency "color"
   gem.add_dependency "chunky_png"
-  gem.add_dependency "oily_png" if RUBY_ENGINE != "jruby"
 
   gem.add_development_dependency "rspec"
   gem.add_development_dependency "fakeweb"

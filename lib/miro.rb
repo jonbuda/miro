@@ -3,8 +3,7 @@ require "terrapin"
 require "color"
 require "tempfile"
 require "open-uri"
-require png_lib = (RUBY_ENGINE != "jruby" ? "oily_png" : "chunky_png") # Load the C extension oily_png unless jruby is the platform in use.
-
+require png_lib = "chunky_png"
 require "miro/dominant_colors"
 
 module Miro
