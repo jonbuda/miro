@@ -1,4 +1,6 @@
-require 'shellwords'
+# frozen_string_literal: true
+
+require "shellwords"
 
 module Miro
   class DominantColors

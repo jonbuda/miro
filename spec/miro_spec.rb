@@ -1,16 +1,18 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-describe Miro do
-  describe '.options' do
-    it "has default options" do
-      Miro.options[:image_magick_path].should eq(`which convert`.strip)
-      Miro.options[:color_count].should eq(8)
-      Miro.options[:resolution].should eq('150x150')
+require_relative "spec_helper"
+
+RSpec.describe Miro do
+  describe ".configuration" do
+    it "has default configuration" do
+      expect(Miro.configuration.image_magick_path).to eq(`which convert`.strip)
+      expect(Miro.configuration.color_count).to eq(8)
+      expect(Miro.configuration.resolution).to eq("150x150")
     end
 
-    it "can override the default options" do
-      Miro.options[:image_magick_path] = '/path/to/command'
-      Miro.options[:image_magick_path].should == '/path/to/command'
+    it "can override the default configuration" do
+      Miro.configuration.image_magick_path = "/path/to/command"
+      expect(Miro.configuration.image_magick_path).to eq("/path/to/command")
     end
   end
 end
