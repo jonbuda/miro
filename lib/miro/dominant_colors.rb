@@ -12,21 +12,24 @@ module Miro
     end
 
     def to_hex
-      return histogram.map{ |item| item[1].html } if Miro.histogram?
+      return histogram.map { |item| item[1].html } if Miro.histogram?
+
       sorted_pixels.collect { |pixel| ChunkyPNG::Color.to_hex(pixel, false) }
     end
 
     def to_rgb
       return histogram.map { |item| item[1].to_rgb.to_a } if Miro.histogram?
+
       sorted_pixels.collect { |pixel| ChunkyPNG::Color.to_truecolor_bytes(pixel) }
     end
 
     def to_rgba
       return histogram.map { |item| item[1].css_rgba } if Miro.histogram?
+
       sorted_pixels.collect { |pixel| ChunkyPNG::Color.to_truecolor_alpha_bytes(pixel) }
     end
 
-   def to_hsl
+    def to_hsl
       histogram.map { |item| item[1].to_hsl.to_a } if Miro.histogram?
     end
 
@@ -40,6 +43,7 @@ module Miro
 
     def by_percentage
       return nil if Miro.histogram?
+
       sorted_pixels
       pixel_count = @pixels.size
       sorted_pixels.collect { |pixel| @grouped_pixels[pixel].size / pixel_count.to_f }
@@ -50,24 +54,25 @@ module Miro
     end
 
     def histogram
-      @histogram ||= downsample_and_histogram.sort_by { |item| item[0]  }.reverse
+      @histogram ||= downsample_and_histogram.sort_by { |item| item[0] }.reverse
     end
-  private
+
+    private
 
     def downsample_and_histogram
       @source_image = open_source_image
-      hstring = Terrapin::CommandLine.new(Miro.options[:image_magick_path], image_magick_params).
-        run(:in => Shellwords.escape(File.expand_path(@source_image.path)),
-            :resolution => Miro.options[:resolution],
-            :colors => Miro.options[:color_count].to_s,
-            :quantize => Miro.options[:quantize])
+      hstring = Terrapin::CommandLine.new(Miro.configuration.image_magick_path, image_magick_params)
+                                     .run(in: Shellwords.escape(File.expand_path(@source_image.path)),
+                                          resolution: Miro.configuration.resolution,
+                                          colors: Miro.configuration.color_count.to_s,
+                                          quantize: Miro.configuration.quantize)
       cleanup_temporary_files!
       parse_result(hstring)
     end
 
     def parse_result(hstring)
       hstring.scan(/(\d*):.*(#[0-9A-Fa-f]*)/).collect do |match|
-        [match[0].to_i, eval("Color::#{Miro.options[:quantize].upcase}").from_html(match[1])]
+        [match[0].to_i, eval("Color::#{Miro.configuration.quantize.upcase}").from_html(match[1])]
       end
     end
 
@@ -82,18 +87,18 @@ module Miro
       @source_image = open_source_image
       @downsampled_image = open_downsampled_image
 
-      Terrapin::CommandLine.new(Miro.options[:image_magick_path], image_magick_params).
-        run(:in => Shellwords.escape(File.expand_path(@source_image.path)),
-            :resolution => Miro.options[:resolution],
-            :colors => Miro.options[:color_count].to_s,
-            :quantize => Miro.options[:quantize],
-            :out => File.expand_path(@downsampled_image.path))
+      Terrapin::CommandLine.new(Miro.configuration.image_magick_path, image_magick_params)
+                           .run(in: Shellwords.escape(File.expand_path(@source_image.path)),
+                                resolution: Miro.configuration.resolution,
+                                colors: Miro.configuration.color_count.to_s,
+                                quantize: Miro.configuration.quantize,
+                                out: File.expand_path(@downsampled_image.path))
     end
 
     def open_source_image
       return File.open(@src_image_path) unless remote_source_image?
 
-      original_extension = @image_type || URI.parse(@src_image_path).path.split('.').last
+      original_extension = @image_type || URI.parse(@src_image_path).path.split(".").last
 
       tempfile = Tempfile.open(["source", ".#{original_extension}"])
       remote_file_data = open(@src_image_path).read
@@ -104,11 +109,11 @@ module Miro
     end
 
     def should_force_encoding?
-      Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('1.9')
+      Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new("1.9")
     end
 
     def open_downsampled_image
-      tempfile = Tempfile.open(["downsampled", '.png'])
+      tempfile = Tempfile.open(["downsampled", ".png"])
       tempfile.binmode
       tempfile
     end
@@ -127,16 +132,16 @@ module Miro
     end
 
     def sort_by_dominant_color
-      group_pixels_by_color.sort_by { |k,v| v.size }.reverse.flatten.uniq
+      group_pixels_by_color.sort_by { |_k, v| v.size }.reverse.flatten.uniq
     end
 
     def cleanup_temporary_files!
       @source_image.close! if remote_source_image?
-      @downsampled_image.close! if @downsampled_image
+      @downsampled_image&.close!
     end
 
     def remote_source_image?
-      @src_image_path =~ /^https?:\/\//
+      @src_image_path =~ %r{^https?://}
     end
   end
 end
