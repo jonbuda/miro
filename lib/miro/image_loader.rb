@@ -2,7 +2,7 @@
 
 module Miro
   class ImageLoader
-    attr_reader :source_path
+    attr_reader :filepath
 
     def initialize(filepath, image_type: nil)
       @filepath = filepath
