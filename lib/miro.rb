@@ -4,6 +4,7 @@ require "terrapin"
 require "color"
 require "tempfile"
 require "open-uri"
+require "securerandom"
 # Load the C extension oily_png unless jruby is the platform in use.
 if RUBY_ENGINE == "jruby"
   require "chunky_png"
