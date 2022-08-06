@@ -17,6 +17,10 @@ module Miro
       end
     end
 
+    def respond_to_missing?(method_name, include_private = false)
+      downsampler.respond_to?(method_name) || super
+    end
+
     private
 
     attr_reader :downsampler
