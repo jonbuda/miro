@@ -10,15 +10,15 @@ module Miro
       @resolution = "150x150"
       @color_count = 8
       @quantize = "RGB"
-      @method = "pixel_group"
+      @method = :pixel_group
     end
 
     def pixel_group?
-      method == "pixel_group"
+      method == :pixel_group
     end
 
     def histogram?
-      method == "histogram"
+      method == :histogram
     end
   end
 
