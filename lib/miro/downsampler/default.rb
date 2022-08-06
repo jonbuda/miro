@@ -31,7 +31,7 @@ module Miro
       def run_convert_command
         raise NotImplementedError, "Subclasses must implement #image_magick_params"
       end
-      
+
       def downsampled_tempfile
         tempfile = Tempfile.open([SecureRandom.uuid, ".png"])
         tempfile.binmode
