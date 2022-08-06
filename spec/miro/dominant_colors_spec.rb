@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../spec_helper"
+require "spec_helper"
 
 RSpec.describe Miro::DominantColors do
   context "colors_group method" do
