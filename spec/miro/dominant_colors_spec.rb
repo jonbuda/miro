@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe Miro::DominantColors do
-  let(:filepath) { File.join(__dir__, "../data/test.png") }
+  let(:filepath) { File.join(__dir__, "../fixtures/test.png") }
   let(:tempfile) { File.open(filepath) }
 
   it "must call image_loader" do

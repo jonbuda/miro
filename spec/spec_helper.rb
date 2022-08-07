@@ -10,6 +10,4 @@
 require "miro"
 require "webmock/rspec"
 
-RSpec.configure do |config|
-  config.run_all_when_everything_filtered = true
-end
+Dir["./spec/support/**/*.rb"].sort.each { |f| require f }
