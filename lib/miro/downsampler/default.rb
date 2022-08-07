@@ -14,11 +14,11 @@ module Miro
         @command_output = run_convert_command
       end
 
-      def close!
+      protected
+
+      def close_downsampled!
         downsampled.close!
       end
-
-      protected
 
       def source_path
         File.expand_path(source.path)

@@ -20,7 +20,7 @@ module Miro
       end
 
       def histogram
-        grouped_pixels.to_h { |pixel, group| [pixel, group.size] } 
+        grouped_pixels.transform_values(&:size)
       end
 
       def sorted_pixels
@@ -36,7 +36,11 @@ module Miro
       end
 
       def pixels
-        @pixels ||= ChunkyPNG::Image.from_file(downsampled_path).pixels
+        return @pixels if defined?(@pixels)
+
+        @pixels = ChunkyPNG::Image.from_file(downsampled_path).pixels
+        close_downsampled!
+        @pixels
       end
 
       protected

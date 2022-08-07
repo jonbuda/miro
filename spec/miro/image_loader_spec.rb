@@ -3,7 +3,6 @@
 require "spec_helper"
 
 RSpec.describe Miro::ImageLoader do
-
   it "must take a paramter and sets the filepath" do
     miro = Miro::ImageLoader.new("path/to/file")
     expect(miro.filepath).to eq("path/to/file")
@@ -20,7 +19,7 @@ RSpec.describe Miro::ImageLoader do
 
     before do
       stub_request(:get, "http://domain.com/to/image.jpg")
-        .to_return(body: File.new(File.join(__dir__,'../data/test.png')), status: 200)
+        .to_return(body: File.new(File.join(__dir__, "../data/test.png")), status: 200)
       allow(Tempfile).to receive(:open).and_return(mock_source_image)
     end
 
