@@ -2,7 +2,7 @@
 
 module Miro
   class ImageLoader
-    attr_reader :filepath
+    attr_reader :filepath, :image_type
 
     def initialize(filepath, image_type: nil)
       @filepath = filepath
@@ -17,9 +17,11 @@ module Miro
       file.close! if remote?
     end
 
-    private
+    def remote?
+      filepath.start_with?("http")
+    end
 
-    attr_reader :image_type
+    private
 
     def open_or_download_file
       return File.open(filepath) unless remote?
@@ -27,15 +29,11 @@ module Miro
       original_extension = image_type || URI.parse(filepath).path.split(".").last
 
       tempfile = Tempfile.open(["source", ".#{original_extension}"])
-      remote_file_data = open(filepath).read
+      remote_file_data = URI.open(filepath).read
 
       tempfile.write(force_encoding? ? remote_file_data.force_encoding("UTF-8") : remote_file_data)
       tempfile.close
       tempfile
-    end
-
-    def remote?
-      filepath.start_with?("http")
     end
 
     def force_encoding?

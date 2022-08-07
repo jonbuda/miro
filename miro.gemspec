@@ -10,6 +10,7 @@ Gem::Specification.new do |gem|
   gem.homepage      = "https://github.com/jonbuda/miro"
 
   gem.requirements  = "ImageMagick"
+  gem.required_ruby_version = ">= 2.6.0"
 
   gem.add_dependency "chunky_png"
   gem.add_dependency "color"

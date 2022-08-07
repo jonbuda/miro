@@ -8,11 +8,8 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 #
 require "miro"
-require "fakeweb"
+require "webmock/rspec"
 
 RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
-  config.filter_run :focus
 end
-
-FakeWeb.register_uri(:get, "http://domain.com/to/image.jpg", body: "image data")
