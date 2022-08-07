@@ -33,222 +33,211 @@ RSpec.describe Miro::DominantColors do
     end
 
     before do
-      Miro.stub(:histogram?).and_return(false)
       Terrapin::CommandLine.stub(:new).and_return(double("command", run: true))
       ChunkyPNG::Image.stub(:from_file).and_return(chunky_png_results)
     end
 
-    it "takes a paramter and sets the source image path" do
-      miro = Miro::DominantColors.new("path/to/file")
-      expect(miro.src_image_path).to eq("path/to/file")
-    end
+    # describe "#sorted_pixels" do
+    #   before { subject.stub(:extract_colors_from_image).and_return(expected_pixels) }
 
-    describe "#sorted_pixels" do
-      before { subject.stub(:extract_colors_from_image).and_return(expected_pixels) }
+    #   it "extracts colors from the image the first time it's called" do
+    #     subject.should_receive(:extract_colors_from_image).and_return(expected_pixels)
+    #     subject.sorted_pixels
+    #   end
 
-      it "extracts colors from the image the first time it's called" do
-        subject.should_receive(:extract_colors_from_image).and_return(expected_pixels)
-        subject.sorted_pixels
-      end
+    #   it "returns previously extracted colors on subsequent calls" do
+    #     subject.should_receive(:extract_colors_from_image).once
+    #     subject.sorted_pixels
+    #     subject.sorted_pixels
+    #   end
+    # end
 
-      it "returns previously extracted colors on subsequent calls" do
-        subject.should_receive(:extract_colors_from_image).once
-        subject.sorted_pixels
-        subject.sorted_pixels
-      end
-    end
+    # context "when extracting colors" do
+    #   before do
+    #     File.stub(:open).and_return(mock_source_image)
+    #   end
 
-    context "when extracting colors" do
-      before do
-        File.stub(:open).and_return(mock_source_image)
-      end
+    #   it "opens the tempfile for the downsampled image" do
+    #     Tempfile.should_receive(:open).with(["downsampled", ".png"]).and_return(mock_downsampled_image)
+    #     subject.sorted_pixels
+    #   end
 
-      it "opens the tempfile for the downsampled image" do
-        Tempfile.should_receive(:open).with(["downsampled", ".png"]).and_return(mock_downsampled_image)
-        subject.sorted_pixels
-      end
+    #   it "runs the imagemagick command line with the correct arguments" do
+    #     subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
+    #     line = double("line")
+    #     Terrapin::CommandLine.should_receive(:new).with(Miro.configuration.image_magick_path,
+    #                                                     "':in[0]' -resize :resolution -colors :colors -colorspace :quantize -quantize :quantize :out").and_return(line)
 
-      it "runs the imagemagick command line with the correct arguments" do
-        subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
-        line = double("line")
-        Terrapin::CommandLine.should_receive(:new).with(Miro.configuration.image_magick_path,
-                                                        "':in[0]' -resize :resolution -colors :colors -colorspace :quantize -quantize :quantize :out").and_return(line)
+    #     line.should_receive(:run).with(in: "/path/to/source_image",
+    #                                    resolution: Miro.configuration.resolution,
+    #                                    colors: Miro.configuration.color_count.to_s,
+    #                                    quantize: Miro.configuration.quantize,
+    #                                    out: "/path/to/downsampled_image")
+    #     subject.sorted_pixels
+    #   end
 
-        line.should_receive(:run).with(in: "/path/to/source_image",
-                                       resolution: Miro.configuration.resolution,
-                                       colors: Miro.configuration.color_count.to_s,
-                                       quantize: Miro.configuration.quantize,
-                                       out: "/path/to/downsampled_image")
-        subject.sorted_pixels
-      end
+    #   it "sorts the colors from most dominant to least" do
+    #     subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
+    #     subject.sorted_pixels.should eq(expected_pixels)
+    #   end
+    # end
 
-      it "sorts the colors from most dominant to least" do
-        subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
-        subject.sorted_pixels.should eq(expected_pixels)
-      end
-    end
+    # context "when the source image is a local image file" do
+    #   let(:subject) { Miro::DominantColors.new("/path/to/image.jpg") }
 
-    context "when the source image is a local image file" do
-      let(:subject) { Miro::DominantColors.new("/path/to/image.jpg") }
+    #   before do
+    #     File.stub(:open).and_return(mock_source_image)
+    #     subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
+    #   end
 
-      before do
-        File.stub(:open).and_return(mock_source_image)
-        subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
-      end
+    #   it "opens for the file resource" do
+    #     File.should_receive(:open).with(subject.src_image_path)
+    #     subject.sorted_pixels
+    #   end
 
-      it "opens for the file resource" do
-        File.should_receive(:open).with(subject.src_image_path)
-        subject.sorted_pixels
-      end
+    #   it "deletes only temporary downsampled file when finished" do
+    #     mock_downsampled_image.should_receive(:close!)
+    #     mock_source_image.should_not_receive(:close!)
+    #     subject.sorted_pixels
+    #   end
+    # end
 
-      it "deletes only temporary downsampled file when finished" do
-        mock_downsampled_image.should_receive(:close!)
-        mock_source_image.should_not_receive(:close!)
-        subject.sorted_pixels
-      end
-    end
+    # context "when the source image is a remote image" do
+    #   let(:subject) { Miro::DominantColors.new("http://domain.com/to/image.jpg") }
 
-    context "when the source image is a remote image" do
-      let(:subject) { Miro::DominantColors.new("http://domain.com/to/image.jpg") }
+    #   before do
+    #     subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
+    #     Tempfile.stub(:open).and_return(mock_source_image)
+    #   end
 
-      before do
-        subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
-        Tempfile.stub(:open).and_return(mock_source_image)
-      end
+    #   it "deletes the temporary source file when finished" do
+    #     mock_source_image.should_receive(:close!)
+    #     subject.sorted_pixels
+    #   end
+    # end
 
-      it "opens for the file resource" do
-        Tempfile.should_receive(:open).with(["source", ".jpg"]).and_return(mock_source_image)
-        subject.sorted_pixels
-      end
+    # context "when retrieving various color values" do
+    #   before { subject.stub(:sorted_pixels).and_return(expected_pixels) }
 
-      it "deletes the temporary source file when finished" do
-        mock_source_image.should_receive(:close!)
-        subject.sorted_pixels
-      end
-    end
+    #   describe "#to_hex" do
+    #     it "converts sorted pixel data into hex color values" do
+    #       subject.to_hex.should eq(expected_hex_values)
+    #     end
+    #   end
 
-    context "when retrieving various color values" do
-      before { subject.stub(:sorted_pixels).and_return(expected_pixels) }
+    #   describe "#to_rgb" do
+    #     it "converts sorted pixel data into rgb color values" do
+    #       subject.to_rgb.should eq(expected_rgb_values)
+    #     end
+    #   end
 
-      describe "#to_hex" do
-        it "converts sorted pixel data into hex color values" do
-          subject.to_hex.should eq(expected_hex_values)
-        end
-      end
+    #   describe "#to_rgba" do
+    #     it "converts sorted pixel data into rgba color values" do
+    #       subject.to_rgba.should eq(expected_rgba_values)
+    #     end
+    #   end
+    # end
 
-      describe "#to_rgb" do
-        it "converts sorted pixel data into rgb color values" do
-          subject.to_rgb.should eq(expected_rgb_values)
-        end
-      end
+    # context "when find percentages of each color" do
+    #   let(:pixel_data) do
+    #     [2_678_156_287,
+    #      1_362_307_839, 1_362_307_839,
+    #      2_506_379_263, 2_506_379_263, 2_506_379_263, 2_506_379_263,
+    #      2_739_747_583, 2_739_747_583, 2_739_747_583]
+    #   end
 
-      describe "#to_rgba" do
-        it "converts sorted pixel data into rgba color values" do
-          subject.to_rgba.should eq(expected_rgba_values)
-        end
-      end
-    end
+    #   describe "#by_percentage" do
+    #     before do
+    #       File.stub(:open).and_return(mock_source_image)
+    #       subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
+    #     end
 
-    context "when find percentages of each color" do
-      let(:pixel_data) do
-        [2_678_156_287,
-         1_362_307_839, 1_362_307_839,
-         2_506_379_263, 2_506_379_263, 2_506_379_263, 2_506_379_263,
-         2_739_747_583, 2_739_747_583, 2_739_747_583]
-      end
-
-      describe "#by_percentage" do
-        before do
-          File.stub(:open).and_return(mock_source_image)
-          subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
-        end
-
-        it "returns an array of percents" do
-          subject.by_percentage.should == [0.4, 0.3, 0.2, 0.1]
-        end
-      end
-    end
+    #     it "returns an array of percents" do
+    #       subject.by_percentage.should == [0.4, 0.3, 0.2, 0.1]
+    #     end
+    #   end
+    # end
   end
 
-  context "histogram method" do
-    let(:subject) { Miro::DominantColors.new(File.expand_path("spec/data/test.png")) }
-    let(:hex_colors) { ["#00ff02", "#0000ff", "#ff009a", "#fa0000", "#878787", "#585858", "#001a6b", "#8f0074"] }
-    let(:object_colors) { hex_colors.map { |c| Color::RGB.from_html(c) } }
+  # context "histogram method" do
+  #   let(:subject) { Miro::DominantColors.new(File.expand_path("spec/data/test.png")) }
+  #   let(:hex_colors) { ["#00ff02", "#0000ff", "#ff009a", "#fa0000", "#878787", "#585858", "#001a6b", "#8f0074"] }
+  #   let(:object_colors) { hex_colors.map { |c| Color::RGB.from_html(c) } }
 
-    before do
-      Miro.stub(:histogram?).and_return(true)
-    end
+  #   before do
+  #     Miro.stub(:histogram?).and_return(true)
+  #   end
 
-    describe "#downsample_and_histogram" do
-      it "should return an array" do
-        subject.send(:downsample_and_histogram).should be_an_instance_of(Array)
-      end
+  #   describe "#downsample_and_histogram" do
+  #     it "must return an array" do
+  #       subject.send(:downsample_and_histogram).should be_an_instance_of(Array)
+  #     end
 
-      it "should contain colors" do
-        subject.send(:downsample_and_histogram).each do |item|
-          item[1].should be_an_instance_of(Color::RGB)
-        end
-      end
+  #     it "must contain colors" do
+  #       subject.send(:downsample_and_histogram).each do |item|
+  #         item[1].should be_an_instance_of(Color::RGB)
+  #       end
+  #     end
 
-      it "should have the max length of the color config" do
-        subject.send(:downsample_and_histogram).count.should <= Miro.configuration.color_count
-      end
-    end
+  #     it "must have the max length of the color config" do
+  #       subject.send(:downsample_and_histogram).count.should <= Miro.configuration.color_count
+  #     end
+  #   end
 
-    describe "#histogram" do
-      it "should return a hash" do
-        subject.histogram.should be_an_instance_of(Array)
-      end
+  # describe "#histogram" do
+  #   it "must return a hash" do
+  #     subject.histogram.should be_an_instance_of(Array)
+  #   end
 
-      it "should start with the most used color" do
-        subject.histogram.first[1].should == Color::RGB.from_html("#00FF02")
-      end
+  #   it "must start with the most used color" do
+  #     subject.histogram.first[1].should == Color::RGB.from_html("#00FF02")
+  #   end
 
-      it "should end with the less used color" do
-        subject.histogram.last[1].should == Color::RGB.from_html("#8F0074")
-      end
-    end
+  #   it "must end with the less used color" do
+  #     subject.histogram.last[1].should == Color::RGB.from_html("#8F0074")
+  #   end
+  # end
 
-    describe "#to_hex" do
-      it "should be #00FF02 at the first element" do
-        subject.to_hex.first.should == hex_colors.first
-      end
-      it "should be #8F0074 at the first element" do
-        subject.to_hex.last.should == hex_colors.last
-      end
-      it "should have the right values" do
-        subject.to_hex.should == hex_colors
-      end
-    end
+  # describe "#to_hex" do
+  #   it "must be #00FF02 at the first element" do
+  #     subject.to_hex.first.should == hex_colors.first
+  #   end
+  #   it "must be #8F0074 at the first element" do
+  #     subject.to_hex.last.should == hex_colors.last
+  #   end
+  #   it "must have the right values" do
+  #     subject.to_hex.should == hex_colors
+  #   end
+  # end
 
-    describe "#to_rgb" do
-      it "should have the right values" do
-        subject.to_rgb.should == object_colors.map(&:to_rgb).map(&:to_a)
-      end
-    end
+  # describe "#to_rgb" do
+  #   it "must have the right values" do
+  #     subject.to_rgb.should == object_colors.map(&:to_rgb).map(&:to_a)
+  #   end
+  # end
 
-    describe "#to_rgba" do
-      it "should have the right values" do
-        subject.to_rgba.should == object_colors.map(&:css_rgba)
-      end
-    end
+  # describe "#to_rgba" do
+  #   it "must have the right values" do
+  #     subject.to_rgba.should == object_colors.map(&:css_rgba)
+  #   end
+  # end
 
-    describe "#to_hsl" do
-      it "should have the right values" do
-        subject.to_hsl.should == object_colors.map(&:to_hsl).map(&:to_a)
-      end
-    end
+  # describe "#to_hsl" do
+  #   it "must have the right values" do
+  #     subject.to_hsl.should == object_colors.map(&:to_hsl).map(&:to_a)
+  #   end
+  # end
 
-    describe "#to_cmyk" do
-      it "should have the right values" do
-        subject.to_cmyk.should == object_colors.map(&:to_cmyk).map(&:to_a)
-      end
-    end
+  # describe "#to_cmyk" do
+  #   it "must have the right values" do
+  #     subject.to_cmyk.should == object_colors.map(&:to_cmyk).map(&:to_a)
+  #   end
+  # end
 
-    describe "#to_yiq" do
-      it "should have the right values" do
-        subject.to_yiq.should == object_colors.map(&:to_yiq).map(&:to_a)
-      end
-    end
-  end
+  # describe "#to_yiq" do
+  #   it "must have the right values" do
+  #     subject.to_yiq.should == object_colors.map(&:to_yiq).map(&:to_a)
+  #   end
+  # end
+  # end
 end
