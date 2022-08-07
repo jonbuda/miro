@@ -16,6 +16,8 @@ Style/StringLiteralsInInterpolation:
 
 Layout/LineLength:
   Max: 120
+  Exclude:
+    - lib/miro/downsampler/histogram.rb
 
 Metrics/BlockLength:
   Exclude:

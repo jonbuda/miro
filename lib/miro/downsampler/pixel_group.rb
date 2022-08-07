@@ -3,24 +3,12 @@
 module Miro
   module Downsampler
     class PixelGroup < Default
-      def to_hex
-        sorted_pixels.map { |pixel| ChunkyPNG::Color.to_hex(pixel, false) }
-      end
-
-      def to_rgb
-        sorted_pixels.map { |pixel| ChunkyPNG::Color.to_truecolor_bytes(pixel) }
-      end
-
-      def to_rgba
-        sorted_pixels.map { |pixel| ChunkyPNG::Color.to_truecolor_alpha_bytes(pixel) }
-      end
-
       def by_percentage
         sorted_pixels.map { |pixel| grouped_pixels[pixel].size / pixel_count.to_f }
       end
 
       def histogram
-        grouped_pixels.transform_values(&:size)
+        @histogram ||= grouped_pixels.transform_values(&:size)
       end
 
       def sorted_pixels

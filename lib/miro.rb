@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "terrapin"
-require "color"
+# require "color"
 require "tempfile"
 require "open-uri"
 require "securerandom"
