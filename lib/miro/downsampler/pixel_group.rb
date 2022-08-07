@@ -7,12 +7,12 @@ module Miro
         sorted_pixels.map { |pixel| grouped_pixels[pixel].size / pixel_count.to_f }
       end
 
-      def histogram
-        @histogram ||= grouped_pixels.transform_values(&:size)
-      end
-
       def sorted_pixels
         @sorted_pixels ||= grouped_pixels.sort_by { |_k, v| v.size }.reverse.flatten.uniq
+      end
+
+      def histogram
+        @histogram ||= grouped_pixels.transform_values(&:size)
       end
 
       def grouped_pixels
