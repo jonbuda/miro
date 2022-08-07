@@ -26,11 +26,11 @@ module Miro
         sorted_pixels.map { |pixel| ChunkyPNG::Color.to_truecolor_alpha_bytes(pixel) }
       end
 
-      protected
-
       def sorted_pixels
         raise NotImplementedError, "You must implement #sorted_pixels in a subclass"
       end
+
+      protected
 
       def close_downsampled!
         downsampled.close!
