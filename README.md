@@ -26,16 +26,30 @@ Or install it yourself as:
 
 Configuration
 
+
 ```ruby
 # Defaults
-Miro.options # => {:image_magick_path  => "/usr/bin/convert", :resolution => "150x150", :color_count => 8}
 
-# Setting new options
-Miro.options[:image_magick_path] = '/usr/local/bin/convert'
-Miro.options[:resolution] = '100x100'
-Miro.options[:color_count] = 4
-Miro.options[:method] = 'histogram'
+Miro.configuration
+# => #<Miro::Configuration:0x00000001045a6838
+#  @color_count=8,
+#  @image_magick_path="/opt/homebrew/bin/convert",
+#  @method="pixel_group",
+#  @quantize="RGB",
+#  @resolution="150x150">
 ```
+
+Setting new configuration values
+
+```ruby
+  Miro.configure do |config|
+    config.image_magick_path = '/usr/local/bin/convert'
+    config.resolution = "100x100"
+    config.color_count = 5
+    conifg.method = 'histogram'
+  end
+```
+
 By default the method option is configured with 'pixel_group' to improve performance change to 'histogram', this will fetch directly from imagemagick the image histogram without any disk operation(read/write) but read the original file.
 
 Initializing an image

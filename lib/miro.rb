@@ -1,30 +1,17 @@
-require "miro/version"
+# frozen_string_literal: true
+
 require "terrapin"
-require "color"
 require "tempfile"
 require "open-uri"
-require png_lib = (RUBY_ENGINE != "jruby" ? "oily_png" : "chunky_png") # Load the C extension oily_png unless jruby is the platform in use.
+require "securerandom"
+require "chunky_png"
 
-require "miro/dominant_colors"
+require_relative "miro/version"
+require_relative "miro/configuration"
+require_relative "miro/image_loader"
+require_relative "miro/downsampler"
+require_relative "miro/dominant_colors"
 
 module Miro
-  class << self
-    def options
-      convert = `which convert`.strip
-      @options ||= {
-        :image_magick_path  => convert.length > 0 ? convert : '/usr/bin/convert',
-        :resolution         => "150x150",
-        :color_count        => 8,
-        :quantize           => 'RGB',
-        :method             => 'pixel_group'
-      }
-    end
-    def pixel_group?
-      options[:method] == 'pixel_group'
-    end
-
-    def histogram?
-      options[:method] == 'histogram'
-    end
-  end
+  class Error < StandardError; end
 end
