@@ -24,5 +24,7 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
+    - name: Imagemagick version
+      run: convert -v
     - name: Run the default task
       run: bundle exec rake
