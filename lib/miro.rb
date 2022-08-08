@@ -4,12 +4,7 @@ require "terrapin"
 require "tempfile"
 require "open-uri"
 require "securerandom"
-# Load the C extension oily_png unless jruby is the platform in use.
-if RUBY_ENGINE == "jruby"
-  require "chunky_png"
-else
-  require "oily_png"
-end
+require "chunky_png"
 
 require_relative "miro/version"
 require_relative "miro/configuration"

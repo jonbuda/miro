@@ -13,8 +13,6 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = ">= 2.6.0"
 
   gem.add_dependency "chunky_png"
-  gem.add_dependency "color"
-  gem.add_dependency "oily_png" if RUBY_ENGINE != "jruby"
   gem.add_dependency "terrapin"
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
