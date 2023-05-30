@@ -24,7 +24,7 @@ module Miro
       sorted_pixels.collect { |pixel| ChunkyPNG::Color.to_truecolor_alpha_bytes(pixel) }
     end
 
-   def to_hsl
+    def to_hsl
       histogram.map { |item| item[1].to_hsl.to_a } if Miro.histogram?
     end
 
@@ -48,14 +48,15 @@ module Miro
     end
 
     def histogram
-      @histogram ||= downsample_and_histogram.sort_by { |item| item[0]  }.reverse
+      @histogram ||= downsample_and_histogram.sort_by { |item| item[0] }.reverse
     end
+
   private
 
     def downsample_and_histogram
       @source_image = open_source_image
-      hstring = Terrapin::CommandLine.new(Miro.options[:image_magick_path], image_magick_params).
-        run(:in => Shellwords.escape(File.expand_path(@source_image.path)),
+      hstring = Terrapin::CommandLine.new(Miro.options[:image_magick_path], image_magick_params)
+        .run(:in => Shellwords.escape(File.expand_path(@source_image.path)),
             :resolution => Miro.options[:resolution],
             :colors => Miro.options[:color_count].to_s,
             :quantize => Miro.options[:quantize])
@@ -94,7 +95,7 @@ module Miro
       original_extension = @image_type || URI.parse(@src_image_path).path.split('.').last
 
       tempfile = Tempfile.open(["source", ".#{original_extension}"])
-      remote_file_data = open(@src_image_path).read
+      remote_file_data = URI.parse(@src_image_path).read
 
       tempfile.write(should_force_encoding? ? remote_file_data.force_encoding("UTF-8") : remote_file_data)
       tempfile.close

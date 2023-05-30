@@ -102,6 +102,7 @@ describe Miro::DominantColors do
     before do
       subject.stub(:open_downsampled_image).and_return(mock_downsampled_image)
       Tempfile.stub(:open).and_return(mock_source_image)
+      WebMock.stub_request(:get, 'http://domain.com/to/image.jpg').to_return(status: 200, body: 'image data')
     end
 
     it "opens for the file resource" do
@@ -202,7 +203,7 @@ describe Miro::DominantColors do
     it "should be #00FF02 at the first element" do
       subject.to_hex.first.should == hex_colors.first
     end
-    it "should be #8F0074 at the first element" do
+    it "should be #8F0074 at the last element" do
       subject.to_hex.last.should == hex_colors.last
     end
     it "should have the right values" do
